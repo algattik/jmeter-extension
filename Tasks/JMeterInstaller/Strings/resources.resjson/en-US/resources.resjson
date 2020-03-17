@@ -9,4 +9,7 @@
   "loc.messages.InputVersionNotValidVersion": "Input version %s is not a valid version",
   "loc.messages.JMeterNotFoundInFolder": "JMeter executable not found in path %s",
   "loc.messages.JMeterDownloadFailed": "Failed to download JMeter from url %s. Error %s"
+  "loc.messages.JMeterUtilityDownloadFailed": "Failed to download JMeter utility from url %s. Error %s"
+  "loc.messages.JMeterPluginManagerInstallFailed": "Failed to install JMeter plugin manager. Error %s"
+  "loc.messages.JMeterPluginInstallFailed": "Failed to install JMeter plugins. Error %s"
 }

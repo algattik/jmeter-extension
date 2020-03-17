@@ -12,7 +12,7 @@ describe('Sample task tests', function () {
 
     });
 
-    it('should succeed with simple inputs', function (done: MochaDone) {
+    it('should succeed with valid version number', function (done: MochaDone) {
         this.timeout(1000);
 
         let tp = path.join(__dirname, 'success.js');
@@ -20,13 +20,15 @@ describe('Sample task tests', function () {
 
         tr.run();
         console.log(tr.succeeded);
+        console.log(tr.stderr);
+        console.log(tr.stdout);
         assert.equal(tr.succeeded, true, 'should have succeeded');
         assert.equal(tr.warningIssues.length, 0, "should have no warnings");
         assert.equal(tr.errorIssues.length, 0, "should have no errors");
         done();
     });
 
-    it('it should fail if tool returns 1', function (done: MochaDone) {
+    it('it should fail if invalid version number provided', function (done: MochaDone) {
         this.timeout(1000);
 
         let tp = path.join(__dirname, 'failure.js');

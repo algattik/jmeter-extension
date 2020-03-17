@@ -6,6 +6,8 @@ import path = require('path');
 const userRequestedVersion = "5.1";
 const expectedDownloadUrl =
     `https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${userRequestedVersion}.zip`;
+const cmdrunnerUrl = "http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar";
+const pluginmgrUrl = "http://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-manager/1.3/jmeter-plugins-manager-1.3.jar";
 const fakeDownloadedPath = "/fake/path/to/downloaded/file";
 
 let taskPath = path.join(__dirname, '..', 'src', 'index.js');
@@ -25,10 +27,20 @@ tmr.registerMock("azure-pipelines-tool-lib/tool", {
         return undefined;
     },
     downloadTool: (url: string, fileName?: string) => {
-        if (url !== expectedDownloadUrl) {
-            throw new Error(`Unexpected download url ${url}.`);
+        switch (url) {
+            case expectedDownloadUrl: {
+                return Promise.resolve(fakeDownloadedPath);
+            }
+            case cmdrunnerUrl: {
+                return Promise.resolve(fakeDownloadedPath);
+            }
+            case pluginmgrUrl: {
+                return Promise.resolve(fakeDownloadedPath);
+            }
+            default: {
+                throw new Error(`Unexpected download url ${url}.`);
+            }
         }
-        return Promise.resolve(fakeDownloadedPath);
     },
     extractZip: (file: string, destination?: string) => {
         if (file !== fakeDownloadedPath) {
@@ -80,11 +92,17 @@ const mockAnswers: ma.TaskLibAnswers = {
     checkPath: {
         "/fake/bin/jmeter": true,
     },
-        exec: {
-            '/fake/bin/jmeter --version': {
-                code: 0
-            },
-        }
+    exec: {
+        '/fake/bin/jmeter --version': {
+            code: 0
+        },
+        'java -cp /fake/path/to/extracted/contents/apache-jmeter-5.1/lib/ext/jmeter-plugins-manager-1.3.jar org.jmeterplugins.repository.PluginManagerCMDInstaller': {
+            code: 0
+        },
+        '/fake/path/to/extracted/contents/apache-jmeter-5.1/bin/PluginsManagerCMD.sh install jpgc-fifo,jpgc-json=2.2': {
+            code: 0
+        },
+    }
 } as ma.TaskLibAnswers;
 
 tmr.setAnswers(mockAnswers);
