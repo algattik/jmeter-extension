@@ -1,0 +1,56 @@
+{
+    "manifestVersion": 1,
+    "id": "custom-jmeter-tasks3",
+    "name": "JMeter",
+    "version": "0.0.20",
+    "publisher": "AlexandreGattiker",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "description": "[EXPERIMENTAL - CURRENTLY NOT WORKING] Install JMeter testing tool.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "Tags": [
+        "JMeter",
+        "Azure",
+        "Performance",
+        "Load",
+        "Integration",
+        "Test",
+        "Testing",
+        "Release",
+        "DevOps"
+    ],
+    "branding": {
+        "color": "#FFFFFF",
+        "theme": "light"
+    },
+    "icons": {
+        "default": "images/icon.png"
+    },
+    "content": {
+        "details": {
+            "path": "overview.md"
+        }
+    },
+    "files": [
+        {
+            "path": "Tasks/JMeterInstaller"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "custom-jmeter-installer-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/JMeterInstaller"
+            }
+        }
+    ]
+}

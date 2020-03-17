@@ -1,0 +1,97 @@
+import ma = require('azure-pipelines-task-lib/mock-answer');
+import tmrm = require('azure-pipelines-task-lib/mock-run');
+import mtr = require('azure-pipelines-task-lib/mock-toolrunner');
+import path = require('path');
+
+const userRequestedVersion = "5.1";
+const expectedDownloadUrl =
+    `https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${userRequestedVersion}.zip`;
+const fakeDownloadedPath = "/fake/path/to/downloaded/file";
+
+let taskPath = path.join(__dirname, '..', 'src', 'index.js');
+let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
+
+tmr.setInput('jmeterVersion', userRequestedVersion);
+
+
+tmr.registerMock("azure-pipelines-tool-lib/tool", {
+    findLocalTool: (toolName: string, versionSpec: string, arch?: string) => {
+        if (toolName !== "jmeter") {
+            throw new Error(`Unexpected toolName ${toolName}.`);
+        }
+        if (versionSpec !== userRequestedVersion) {
+            throw new Error(`Unexpected versionSpec ${versionSpec}.`);
+        }
+        return undefined;
+    },
+    downloadTool: (url: string, fileName?: string) => {
+        if (url !== expectedDownloadUrl) {
+            throw new Error(`Unexpected download url ${url}.`);
+        }
+        return Promise.resolve(fakeDownloadedPath);
+    },
+    extractZip: (file: string, destination?: string) => {
+        if (file !== fakeDownloadedPath) {
+            throw new Error(`Unexpected downloaded file path ${file}`);
+        }
+        return Promise.resolve("/fake/path/to/extracted/contents");
+    },
+    cacheDir: (sourceDir: string, tool: string, version: string, arch?: string) => {
+        if (sourceDir !== "/fake/path/to/extracted/contents") {
+            throw new Error(`Unexpected sourceDir ${sourceDir}.`);
+        }
+        if (tool !== "jmeter") {
+            throw new Error(`Unexpected tool ${tool}.`);
+        }
+        if (version !== userRequestedVersion) {
+            throw new Error(`Unexpected version ${version}.`);
+        }
+        if (arch !== undefined) {
+            throw new Error(`Unexpected arch ${arch}.`);
+        }
+        return Promise.resolve("/fake/path/to/cached/dir");
+    },
+    prependPath: (toolPath: string) => {
+        if (toolPath !== "/fake/path/to/cached/dir/apache-jmeter-5.1/bin") {
+            throw new Error(`Unexpected toolPath ${toolPath}.`);
+        }
+        console.log(`prepending path ${toolPath}`);
+    },
+});
+
+// Provide answers for task mock.
+const mockAnswers: ma.TaskLibAnswers = {
+    exist: {
+        "/b/jmeter": true,
+    },
+    find: {
+        "/fake/path/to/cached/dir/jmeter": [
+            "/fake/path/to/cached/dir/jmeter/apache-jmeter-5.1/bin/jmeter",
+            "/fake/path/to/cached/dir/jmeter/apache-jmeter-5.1/bin/jmeter.bat",
+        ],
+        "/fake/path/to/cached/dir": [
+            "/fake/path/to/cached/dir/apache-jmeter-5.1/bin/jmeter",
+            "/fake/path/to/cached/dir/apache-jmeter-5.1/bin/jmeter.bat",
+        ],
+    },
+    which: {
+        "jmeter": "/fake/bin/jmeter",
+    },
+    checkPath: {
+        "/fake/bin/jmeter": true,
+    },
+        exec: {
+            '/fake/bin/jmeter --version': {
+                code: 0
+            },
+        }
+} as ma.TaskLibAnswers;
+
+tmr.setAnswers(mockAnswers);
+
+tmr.registerMock('azure-pipelines-task-lib/toolrunner', require('azure-pipelines-task-lib/mock-toolrunner'));
+
+
+tmr.registerMock("azure-pipelines-task-lib/toolrunner", mtr);
+
+tmr.run();
