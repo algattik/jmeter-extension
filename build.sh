@@ -10,7 +10,7 @@ task=$1
 pushd Tasks/$task
   npm install
   tsc
-  INPUT_JMETERVERSION=5.1 INPUT_TAURUSVERSION=1.14.0 INPUT_JMETERHOME=/fake/jmeter/home INPUT_JMETERPATH=/fake/jmeter/path INPUT_OUTPUTDIR=/fake/output/dir INPUT_TAURUSARGUMENTS="arg1 arg2" mocha tests/_suite.js
+  mocha tests/_suite.js
 popd
 
 jq .version.Patch=$taskVersion Tasks/$task/task.json > tmp

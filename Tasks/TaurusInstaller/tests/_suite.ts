@@ -13,7 +13,7 @@ describe('Taurus installer tests', function () {
     });
 
     it('should succeed with valid version number', function (done: MochaDone) {
-        this.timeout(1000);
+        this.timeout(5000);
 
         let tp = path.join(__dirname, 'success.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
@@ -29,7 +29,7 @@ describe('Taurus installer tests', function () {
     });
 
     it('it should fail if invalid version number provided', function (done: MochaDone) {
-        this.timeout(1000);
+        this.timeout(5000);
 
         let tp = path.join(__dirname, 'failure.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);

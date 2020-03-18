@@ -16,6 +16,7 @@ tmr.setInput('jmeterHome', jmeterHome);
 tmr.setInput('jmeterPath', jmeterPath);
 tmr.setInput('jmeterVersion', jmeterVersion);
 tmr.setInput('outputDir', outputDir);
+tmr.setInput('uploadReport', 'false');
 
 // Provide answers for task mock.
 const mockAnswers: ma.TaskLibAnswers = {
@@ -32,7 +33,7 @@ const mockAnswers: ma.TaskLibAnswers = {
         '/fake/jmeter/path -Jjmeter.save.saveservice.assertion_results_failure_message=false -g /fake/output/dir/kpi.jtl -o /fake/output/dir/report -q /fake/output/dir/jmeter-bzt.properties': {
             code: 0
         },
-    }
+    },
 } as ma.TaskLibAnswers;
 
 tmr.setAnswers(mockAnswers);

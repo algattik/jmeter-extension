@@ -1,10 +1,10 @@
 import tasks = require('azure-pipelines-task-lib/task');
 import path = require('path');
+var zipper = require('zip-local');
 import { ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 
 
-export async function runTaurus(taurusArguments: string, jmeterHome: string, jmeterPath: string, jmeterVersion: string, outputDir: string) {
-
+export async function runTaurusTool(taurusArguments: string, jmeterHome: string, jmeterVersion: string, outputDir: string) {
     if (!/^(\d[\w.]*)$/.test(jmeterVersion)) {
         throw new Error(tasks.loc("InputVersionNotValidVersion", jmeterVersion));
     }
@@ -25,6 +25,11 @@ export async function runTaurus(taurusArguments: string, jmeterHome: string, jme
     if (res != 0) {
         throw new Error(tasks.loc("TaurusRunFailed"));
     }
+}
+
+export async function generateJMeterReport(jmeterPath: string, outputDir: string): Promise<string> {
+
+    let reportDir = `${outputDir}/report`;
 
     let jmeterTool: ToolRunner = tasks.tool(jmeterPath);
     jmeterTool.arg(["-Jjmeter.save.saveservice.assertion_results_failure_message=false"]);
@@ -36,5 +41,11 @@ export async function runTaurus(taurusArguments: string, jmeterHome: string, jme
     if (jmeterRes != 0) {
         throw new Error(tasks.loc("JMeterRunFailed"));
     }
+    return reportDir;
+}
 
+export async function uploadJMeterReport(reportDir: string) {
+    let zipFile = `artifactPath.zip`;
+    zipper.sync.zip(reportDir).compress().save(zipFile);
+    tasks.uploadFile(zipFile);
 }
