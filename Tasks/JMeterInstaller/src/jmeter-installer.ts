@@ -3,9 +3,7 @@ import tools = require('azure-pipelines-tool-lib/tool');
 import { ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import path = require('path');
 import os = require('os');
-import fs = require('fs');
 
-const uuidV4 = require('uuid/v4');
 const jmeterToolName = "jmeter";
 const isWindows = os.type().match(/^Win/);
 const cmdrunnerUrl = "http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar";
@@ -67,7 +65,11 @@ export async function downloadJMeter(version: string): Promise<string> {
         throw new Error(tasks.loc("JMeterNotFoundInFolder", cachedToolPath));
     }
 
-    tasks.setVariable('jmeterLocation', jmeterPath);
+    let jmeterHome = path.resolve(jmeterPath, '../..')
+
+    tasks.setVariable('JMeter.Home', jmeterHome);
+    tasks.setVariable('JMeter.Location', jmeterPath);
+    tasks.setVariable('JMeter.Version', version);
 
     return jmeterPath;
 }

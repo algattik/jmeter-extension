@@ -2,14 +2,14 @@
     "manifestVersion": 1,
     "id": "custom-jmeter-tasks3",
     "name": "JMeter",
-    "version": "0.0.30",
+    "version": "0.0.33",
     "publisher": "AlexandreGattiker",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
-    "description": "[EXPERIMENTAL - CURRENTLY NOT WORKING] Install JMeter testing tool.",
+    "description": "[EXPERIMENTAL] Install JMeter testing tool.",
     "categories": [
         "Azure Pipelines"
     ],
@@ -42,6 +42,9 @@
         },
         {
             "path": "Tasks/TaurusInstaller"
+        },
+        {
+            "path": "Tasks/TaurusRunner"
         }
     ],
     "contributions": [
@@ -63,6 +66,16 @@
             ],
             "properties": {
                 "name": "Tasks/TaurusInstaller"
+            }
+        },
+        {
+            "id": "custom-taurus-runner-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/TaurusRunner"
             }
         }
     ]

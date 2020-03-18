@@ -19,5 +19,6 @@ mv tmp Tasks/$task/task.json
 
 build_task JMeterInstaller
 build_task TaurusInstaller
+build_task TaurusRunner
 
 tfx extension publish -t $ADO_TOKEN --manifest-globs vss-extension.json --share-with algattikjmeter --rev-version

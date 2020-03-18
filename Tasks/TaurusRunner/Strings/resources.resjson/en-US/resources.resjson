@@ -1,0 +1,10 @@
+{
+  "loc.friendlyName": "Taurus tool runner",
+  "loc.helpMarkDown": "[Learn more about this task](https://aka.ms/custom-jmeter-tasks)",
+  "loc.description": "Run JMeter test with Taurus",
+  "loc.instanceNameFormat": "Run Taurus",
+  "loc.input.label.taurusVersion": "Version",
+  "loc.input.help.taurusVersion": "The version of Taurus which should be installed on the agent if not already present",
+  "loc.messages.TaurusRunFailed": "Taurus run failed. %s",
+  "loc.messages.JMeterRunFailed": "JMeter run failed. %s",
+}
