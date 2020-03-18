@@ -27,4 +27,4 @@ For getting more details about exact version, refer to [this link](https://jmete
 
 ### Output Variables
 
-* **JMeter location:** This variable can be used to refer to the location of the JMeter binary that was installed on the agent in subsequent tasks.
+* **JMeter path:** This variable can be used to refer to the path of the JMeter binary that was installed on the agent in subsequent tasks.

@@ -29,8 +29,8 @@ describe('JMeter installer tests', function () {
             "\n##vso[task.setvariable variable=JMeterHome;issecret=false;]/fake/path/to/cached/dir/apache-jmeter-5.1\n"),
             'variable JMeterHome was not set as expected');
         assert.ok(tr.stdout.includes(
-            "\n##vso[task.setvariable variable=JMeterLocation;issecret=false;]/fake/path/to/cached/dir/apache-jmeter-5.1/bin/jmeter\n"),
-            'variable JMeterLocation was not set as expected');
+            "\n##vso[task.setvariable variable=JMeterPath;issecret=false;]/fake/path/to/cached/dir/apache-jmeter-5.1/bin/jmeter\n"),
+            'variable JMeterPath was not set as expected');
         assert.ok(tr.stdout.includes(
             "\n##vso[task.setvariable variable=JMeterVersion;issecret=false;]5.1\n"),
             'variable JMeterVersion was not set as expected');
