@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "custom-jmeter-tasks3",
     "name": "JMeter",
-    "version": "0.0.27",
+    "version": "0.0.29",
     "publisher": "AlexandreGattiker",
     "targets": [
         {
@@ -39,6 +39,9 @@
     "files": [
         {
             "path": "Tasks/JMeterInstaller"
+        },
+        {
+            "path": "Tasks/TaurusInstaller"
         }
     ],
     "contributions": [
@@ -50,6 +53,16 @@
             ],
             "properties": {
                 "name": "Tasks/JMeterInstaller"
+            }
+        },
+        {
+            "id": "custom-taurus-installer-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/TaurusInstaller"
             }
         }
     ]
