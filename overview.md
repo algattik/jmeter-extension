@@ -6,6 +6,7 @@ is a highly versatible open-source highly versatile integration testing tool. It
 ## About Taurus
 
 [Taurus](https://gettaurus.org/) is an open-source automation test framework, that can be used in particular to automate JMeter executions. Taurus can take an existing JMeter plan and define load profile and assertions through simple configuration.
+Taurus can export a test report in JUnit format, that can be published to an Azure DevOps pipeline.
 
 ## About the JMeter extension
 
@@ -18,15 +19,21 @@ The JMeter tool installer task acquires a specified version of [JMeter](https://
 
 This extension is intended to run on **Windows**, **Linux** and **MacOS** agents.
 
+![JMeter report](images/jmeter-report.png)
+
+![Pipeline tests](images/pipeline-tests.png)
+
 ## JMeter tool installer task
 
 - Search for **JMeter tool installer** and click on **Add**
 
-![Adding JMeter tool installer task](images/3_JMeter_tool_installer_search.PNG)
+![Adding JMeter tool installer task](images/JMeter_tool_installer_search.png)
 
 - In the **Version** input, select the exact version of JMeter you want to install on the build agent. e.g. if you want to install version 5.1, enter `5.1`
 
-![Using JMeter tool installer task](images/4_JMeter_tool_installer_inputs.PNG)
+- In the **Plugins** input, optionally enter a comma-separated list of [JMeter plugins](https://jmeter-plugins.org/) to install
+
+![Using JMeter tool installer task](images/JMeter_tool_installer_inputs.png)
 
 ## Taurus tool installer task
 
@@ -34,17 +41,17 @@ This extension is intended to run on **Windows**, **Linux** and **MacOS** agents
 
 - Search for **Taurus tool installer** and click on **Add**
 
-![Adding Taurus tool installer task](images/3_Taurus_tool_installer_search.PNG)
+![Adding Taurus tool installer task](images/Taurus_tool_installer_search.png)
 
 - In the **Version** input, select the exact version of Taurus you want to install on the build agent. e.g. if you want to install version 1.14.0, enter `1.14.0`
 
-![Using Taurus tool installer task](images/4_Taurus_tool_installer_inputs.PNG)
+![Using Taurus tool installer task](images/Taurus_tool_installer_inputs.png)
 
 ## Taurus tool runner task
 
 - Search for **Taurus tool runner** and click on **Add**
 
-![Using Taurus tool runner task](images/4_Taurus_tool_runner_inputs.PNG)
+![Adding Taurus tool runner task](images/Taurus_tool_runner_search.png)
 
 * In the **Taurus Arguments** enter a space-separated list of files or websites to test. The following arguments can be passed:
   * Taurus YAML definition file (recommended), which can reference a JMeter JMX file. Example:
@@ -72,34 +79,51 @@ execution:
 
 * Check the **Upload report** checkbox so that the JMeter report is automatically archived within the build logs.
 
+![Using Taurus tool runner task](images/Taurus_tool_runner_inputs.png)
+
 ## Advanced usage
 
-### Real-time monitoring with Azure Application Insights
+### Real-time test monitoring with Azure Application Insights
 
-[Create an Azure Application Insights resource](https://docs.microsoft.com/en-us/azure/azure-monitor/app/create-new-resource) and copy the Instrumentation Key.
-Run the commands below, replacing the key value with yours:
+You can follow your test progress using real-time dashboards using the [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) managed service.
+
+* In your local JMeter installation, configure the [Plugins Manager](https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager/) and install the [Azure backend listener](https://github.com/adrianmo/jmeter-backend-azure) plugin to send live data to Application Insights.
+
+* In your JMeter test plan, add a Backend Listener using the Azure listener and the instrumentation key
+placeholder `${__P(INSTRUMENTATION_KEY)}`.
+
+![JMeter Azure backend listener](images/jmeter-backend-listener.png)
+
+* In your pipeline, the **JUnit tool installer** task, under **plugins**, enter `jmeter.backendlistener.azure` in order to
+install the plugin on the build agent as well.
+
+* [Create an Azure Application Insights resource](https://docs.microsoft.com/en-us/azure/azure-monitor/app/create-new-resource) and copy the Instrumentation Key.
+
+* In your pipeline, configure the JMeter Installer task, the Taurus Installer task, and the Taurus Runner task. As argument to 
+the Taurus Runner task, enter:
 
 ```
-export INSTRUMENTATION_KEY=00000000-0000-0000-0000-000000000000
+-o modules.jmeter.properties.INSTRUMENTATION_KEY="<your key>" your-test-file.jmx
 ```
 
-You can follow the run outcomes in the Application Insights resource in the Azure portal:
+When running your test, you can follow the run outcomes in the Application Insights resource in the Azure portal:
 
-![Application Insights overview](../docs/images/azure-application-insights-overview.png)
+![Application Insights overview](images/azure-application-insights-overview.png)
 
-You can see test data in real time in the Live Metrics view. Note that the view is available only while the test is running, so you may need to increase the test duration
-in
-[scripts/website-test.yml](scripts/website-test.yml) to see this view.
+You can see test data in real time in the Live Metrics view. Note that the view is available only while the test is running.
 
-![Application Insights live metrics](../docs/images/azure-application-insights-live-metrics.png)
+![Application Insights live metrics](images/azure-application-insights-live-metrics.png)
 
 You can also dig into the logs (`requests` collection) and generate charts and dashboards:
 
-![Application Insights table](../docs/images/azure-application-insights-table.png)
+![Application Insights table](images/azure-application-insights-table.png)
 
-![Application Insights chart](../docs/images/azure-application-insights-chart.png)
+![Application Insights chart](images/azure-application-insights-chart.png)
 
 ### Using custom Java libraries
+
+You can extend the JMeter classpath to use additional libraries. This example walks through setting up a Sampler
+that sends requests to a Kafka endpoint (for example, an [Azure Event Hubs](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-for-kafka-ecosystem-overview) instance).
 
 * In your code repository, create a file `kafka-clients-uber-jar.xml` with the following content:
 
@@ -148,6 +172,8 @@ into a single "shaded" JAR, that we will put in the classpath of our job run.
 * Create a JMeter test plan with custom code to connect to Kafka. The easiest way is to create a JSR223 Sampler and write Groovy
 code.
 
+![JMeter Kafka sampler script](images/jmeter-kafka-thread-group.png)
+
 * In your code repository, create a file `kafka-test.yml` with the following content:
 
 ```
@@ -162,4 +188,5 @@ execution:
 
 Ensure that the `user.classpath` points to the location where the Maven task builds the target JAR.
 
-* In your pipeline, configure the JMeter Installer task, the Taurus Installer task, and the Taurus Runner task.
+* In your pipeline, configure the JMeter Installer task, the Taurus Installer task, and the Taurus Runner task. As argument to 
+the Taurus Runner task, enter the location of your `kafka-test.yml` file.

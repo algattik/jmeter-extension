@@ -30,9 +30,13 @@ export async function downloadJMeter(version: string, plugins?: string): Promise
         }
 
         let jmeterUnzippedPath = await tools.extractZip(jmeterDownloadPath);
+        let jmeterDir = `${jmeterUnzippedPath}/apache-jmeter-${version}`;
+
+        // Plugins manager should be installed even when no plugins are installed, as
+        // Taurus detects and automatically installs missing plugins from JMX files.
+        installPluginsManager(jmeterDir);
 
         if (hasPlugins && plugins) {
-            let jmeterDir = `${jmeterUnzippedPath}/apache-jmeter-${version}`;
             installPlugins(jmeterDir, plugins);
         }
 
@@ -64,7 +68,7 @@ function findJMeterExecutable(rootFolder: string): string {
     return matchingResultFiles[0];
 }
 
-async function installPlugins(jmeterDir: string, plugins: string) {
+async function installPluginsManager(jmeterDir: string) {
 
     try {
         await tools.downloadTool(cmdrunnerUrl, `${jmeterDir}/lib/cmdrunner-2.2.jar`);
@@ -85,6 +89,9 @@ async function installPlugins(jmeterDir: string, plugins: string) {
     if (res != 0) {
         throw new Error(tasks.loc("JMeterPluginManagerInstallFailed", cmdrunnerUrl));
     }
+}
+
+async function installPlugins(jmeterDir: string, plugins: string) {
 
     let pmCmd: ToolRunner = tasks.tool(`${jmeterDir}/bin/PluginsManagerCMD${getScriptExtension()}`);
     pmCmd.arg(["install", plugins]);
