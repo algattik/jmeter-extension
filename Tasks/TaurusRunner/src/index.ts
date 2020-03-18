@@ -10,7 +10,7 @@ async function runTaurus() {
     let outputDir = tasks.getInput("outputDir", true) ?? '';
     let uploadReport = tasks.getBoolInput("uploadReport", true) ?? '';
 
-    await runner.runTaurusTool(taurusArguments, jmeterHome, jmeterVersion, outputDir);
+    let junitReport = await runner.runTaurusTool(taurusArguments, jmeterHome, jmeterVersion, outputDir);
     let reportDir = await runner.generateJMeterReport(jmeterPath, outputDir);
     if (uploadReport) {
         await runner.uploadJMeterReport(reportDir);

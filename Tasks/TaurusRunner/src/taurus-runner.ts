@@ -1,17 +1,22 @@
 import tasks = require('azure-pipelines-task-lib/task');
 import path = require('path');
+import fs = require('fs');
+import os = require('os');
 var zipper = require('zip-local');
+import uuidV4 = require('uuid/v4');
 import { ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 
 
-export async function runTaurusTool(taurusArguments: string, jmeterHome: string, jmeterVersion: string, outputDir: string) {
+export async function runTaurusTool(taurusArguments: string, jmeterHome: string, jmeterVersion: string, outputDir: string): Promise<string> {
+
     if (!/^(\d[\w.]*)$/.test(jmeterVersion)) {
         throw new Error(tasks.loc("InputVersionNotValidVersion", jmeterVersion));
     }
 
+    let junitReport = path.join(outputDir, "TEST-Taurus.xml");
     let reportingConfig = {
         module: 'junit-xml',
-        filename: path.join(outputDir, "TEST-Taurus.xml")
+        filename: junitReport,
     };
     let reporting = JSON.stringify(reportingConfig);
 
@@ -25,6 +30,7 @@ export async function runTaurusTool(taurusArguments: string, jmeterHome: string,
     if (res != 0) {
         throw new Error(tasks.loc("TaurusRunFailed"));
     }
+    return junitReport;
 }
 
 export async function generateJMeterReport(jmeterPath: string, outputDir: string): Promise<string> {
@@ -45,7 +51,12 @@ export async function generateJMeterReport(jmeterPath: string, outputDir: string
 }
 
 export async function uploadJMeterReport(reportDir: string) {
-    let zipFile = `artifactPath.zip`;
+
+    const tempDirectory = tasks.getVariable('Agent.TempDirectory') || os.tmpdir();
+    tasks.checkPath(tempDirectory, `${tempDirectory} (Agent.TempDirectory)`);
+    const zipDir = path.join(tempDirectory, uuidV4());
+    fs.mkdirSync(zipDir);
+    const zipFile = path.join(zipDir, `JMeter-Report.zip`);
     zipper.sync.zip(reportDir).compress().save(zipFile);
     tasks.uploadFile(zipFile);
 }
