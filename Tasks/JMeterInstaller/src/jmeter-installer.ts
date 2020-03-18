@@ -67,9 +67,9 @@ export async function downloadJMeter(version: string): Promise<string> {
 
     let jmeterHome = path.resolve(jmeterPath, '../..')
 
-    tasks.setVariable('JMeter.Home', jmeterHome);
-    tasks.setVariable('JMeter.Location', jmeterPath);
-    tasks.setVariable('JMeter.Version', version);
+    tasks.setVariable('JMeterHome', jmeterHome);
+    tasks.setVariable('JMeterLocation', jmeterPath);
+    tasks.setVariable('JMeterVersion', version);
 
     return jmeterPath;
 }

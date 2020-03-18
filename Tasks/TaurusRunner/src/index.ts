@@ -3,8 +3,13 @@ import path = require('path');
 import * as runner from './taurus-runner';
 
 async function runTaurus() {
-    let inputVersion = tasks.getInput("taurusVersion", true) ?? '';
-    await runner.runTaurus(inputVersion);
+    let taurusArguments = tasks.getInput("taurusArguments", true) ?? '';
+    let jmeterHome = tasks.getInput("jmeterHome", true) ?? '';
+    let jmeterPath = tasks.getInput("jmeterPath", true) ??  '';
+    let jmeterVersion = tasks.getInput("jmeterVersion", true) ??  '';
+    let outputDir = tasks.getInput("outputDir", true) ??  '';
+
+    await runner.runTaurus(taurusArguments, jmeterHome, jmeterPath, jmeterVersion, outputDir);
 }
 
 async function run() {

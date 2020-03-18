@@ -2,12 +2,20 @@ import ma = require('azure-pipelines-task-lib/mock-answer');
 import tmrm = require('azure-pipelines-task-lib/mock-run');
 import path = require('path');
 
-const userRequestedVersion = "1.14.0";
+const taurusArguments = "arg1 arg2";
+const jmeterHome = "/fake/jmeter/home";
+const jmeterPath = "/fake/jmeter/path";
+const jmeterVersion = "5.1";
+const outputDir = "/fake/output/dir";
 
 let taskPath = path.join(__dirname, '..', 'src', 'index.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 
-tmr.setInput('taurusVersion', userRequestedVersion);
+tmr.setInput('taurusArguments', taurusArguments);
+tmr.setInput('jmeterHome', jmeterHome);
+tmr.setInput('jmeterPath', jmeterPath);
+tmr.setInput('jmeterVersion', jmeterVersion);
+tmr.setInput('outputDir', outputDir);
 
 // Provide answers for task mock.
 const mockAnswers: ma.TaskLibAnswers = {
@@ -18,10 +26,10 @@ const mockAnswers: ma.TaskLibAnswers = {
         "/fake/bin/bzt": true,
     },
     exec: {
-        'bzt -o settings.artifacts-dir=output -o modules.jmeter.path=jmeter -o modules.jmeter.version=5.1 -o reporting.-1={"module":"junit-xml","filename":"TEST-XXXX.xml"} website-test.yml': {
+        'bzt -o settings.artifacts-dir=/fake/output/dir -o modules.jmeter.path=/fake/jmeter/home -o modules.jmeter.version=5.1 -o reporting.-1={"module":"junit-xml","filename":"/fake/output/dir/TEST-Taurus.xml"} arg1 arg2': {
             code: 0
         },
-        'jmeter -Jjmeter.save.saveservice.assertion_results_failure_message=false -g output/kpi.jtl -o report -q output/jmeter-bzt.properties': {
+        '/fake/jmeter/path -Jjmeter.save.saveservice.assertion_results_failure_message=false -g /fake/output/dir/kpi.jtl -o /fake/output/dir/report -q /fake/output/dir/jmeter-bzt.properties': {
             code: 0
         },
     }
