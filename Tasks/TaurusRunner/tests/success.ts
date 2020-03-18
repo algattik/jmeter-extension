@@ -21,7 +21,7 @@ const mockAnswers: ma.TaskLibAnswers = {
         'bzt -o settings.artifacts-dir=output -o modules.jmeter.path=jmeter -o modules.jmeter.version=5.1 -o reporting.-1={"module":"junit-xml","filename":"TEST-XXXX.xml"} website-test.yml': {
             code: 0
         },
-        'jmeter/bin/jmeter -Jjmeter.save.saveservice.assertion_results_failure_message=false -g output/kpi.jtl -o report -q output/jmeter-bzt.properties': {
+        'jmeter -Jjmeter.save.saveservice.assertion_results_failure_message=false -g output/kpi.jtl -o report -q output/jmeter-bzt.properties': {
             code: 0
         },
     }

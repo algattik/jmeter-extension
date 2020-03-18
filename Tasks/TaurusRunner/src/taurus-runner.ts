@@ -11,6 +11,7 @@ export async function runTaurus(version: string) {
     let artifactsDir = "output";
     let reportDir = "report";
     let jmeterPath = "jmeter";
+    let jmeterToolPath = "jmeter";
     let jmeterVersion = "5.1";
     let testReportFile = "TEST-XXXX.xml";
 
@@ -31,7 +32,7 @@ export async function runTaurus(version: string) {
         throw new Error(tasks.loc("TaurusRunFailed"));
     }
 
-    let jmeterTool: ToolRunner = tasks.tool(`${jmeterPath}/bin/jmeter`);
+    let jmeterTool: ToolRunner = tasks.tool(jmeterToolPath);
     jmeterTool.arg(["-Jjmeter.save.saveservice.assertion_results_failure_message=false"]);
     jmeterTool.arg(["-g", `${artifactsDir}/kpi.jtl`]);
     jmeterTool.arg(["-o", reportDir]);
