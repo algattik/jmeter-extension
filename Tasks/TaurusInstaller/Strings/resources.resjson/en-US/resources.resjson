@@ -1,15 +1,11 @@
 {
   "loc.friendlyName": "Taurus tool installer",
   "loc.helpMarkDown": "[Learn more about this task](https://aka.ms/custom-taurus-tasks)",
-  "loc.description": "Find in cache or download a specific version of Taurus and prepend it to the PATH",
+  "loc.description": "Install a specific version of Taurus",
   "loc.instanceNameFormat": "Install Taurus $(taurusVersion)",
   "loc.input.label.taurusVersion": "Version",
   "loc.input.help.taurusVersion": "The version of Taurus which should be installed on the agent if not already present",
   "loc.messages.VerifyTaurusInstallation": "Verifying Taurus installation...",
   "loc.messages.InputVersionNotValidVersion": "Input version %s is not a valid version",
-  "loc.messages.TaurusNotFoundInFolder": "Taurus executable not found in path %s",
-  "loc.messages.TaurusDownloadFailed": "Failed to download Taurus from url %s. Error %s"
-  "loc.messages.TaurusUtilityDownloadFailed": "Failed to download Taurus utility from url %s. Error %s"
-  "loc.messages.TaurusPluginManagerInstallFailed": "Failed to install Taurus plugin manager. Error %s"
-  "loc.messages.TaurusPluginInstallFailed": "Failed to install Taurus plugins. Error %s"
+  "loc.messages.TaurusInstallFailed": "Failed to install Taurus."
 }

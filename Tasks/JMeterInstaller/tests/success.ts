@@ -1,6 +1,5 @@
 import ma = require('azure-pipelines-task-lib/mock-answer');
 import tmrm = require('azure-pipelines-task-lib/mock-run');
-import mtr = require('azure-pipelines-task-lib/mock-toolrunner');
 import path = require('path');
 
 const userRequestedVersion = "5.1";
@@ -73,9 +72,6 @@ tmr.registerMock("azure-pipelines-tool-lib/tool", {
 
 // Provide answers for task mock.
 const mockAnswers: ma.TaskLibAnswers = {
-    exist: {
-        "/b/jmeter": true,
-    },
     find: {
         "/fake/path/to/cached/dir/jmeter": [
             "/fake/path/to/cached/dir/jmeter/apache-jmeter-5.1/bin/jmeter",
@@ -106,10 +102,5 @@ const mockAnswers: ma.TaskLibAnswers = {
 } as ma.TaskLibAnswers;
 
 tmr.setAnswers(mockAnswers);
-
-tmr.registerMock('azure-pipelines-task-lib/toolrunner', require('azure-pipelines-task-lib/mock-toolrunner'));
-
-
-tmr.registerMock("azure-pipelines-task-lib/toolrunner", mtr);
 
 tmr.run();
