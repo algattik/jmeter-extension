@@ -10,12 +10,15 @@ const cmdrunnerUrl = "http://search.maven.org/remotecontent?filepath=kg/apc/cmdr
 const pluginmgrUrl = "http://search.maven.org/remotecontent?filepath=kg/apc/jmeter-plugins-manager/1.3/jmeter-plugins-manager-1.3.jar";
 
 
-export async function downloadJMeter(version: string): Promise<string> {
+export async function downloadJMeter(version: string, plugins?: string): Promise<string> {
     if (!/^(\d[\w.]*)$/.test(version)) {
         throw new Error(tasks.loc("InputVersionNotValidVersion", version));
     }
 
-    let cachedToolPath = tools.findLocalTool(jmeterToolName, version);
+    let hasPlugins = plugins ? plugins.length : false;
+    let fullToolName = hasPlugins ? `${jmeterToolName}+${plugins?.trim()}` : jmeterToolName;
+
+    let cachedToolPath = tools.findLocalTool(fullToolName, version);
     if (!cachedToolPath) {
         let jmeterDownloadUrl = getJMeterDownloadUrl(version);
         let jmeterDownloadPath;
@@ -28,36 +31,12 @@ export async function downloadJMeter(version: string): Promise<string> {
 
         let jmeterUnzippedPath = await tools.extractZip(jmeterDownloadPath);
 
-        let jmeterDir = `${jmeterUnzippedPath}/apache-jmeter-${version}`;
-
-        try {
-            await tools.downloadTool(cmdrunnerUrl, `${jmeterDir}/lib/cmdrunner-2.2.jar`);
-        } catch (exception) {
-            throw new Error(tasks.loc("JMeterDownloadFailed", cmdrunnerUrl, exception));
+        if (hasPlugins && plugins) {
+            let jmeterDir = `${jmeterUnzippedPath}/apache-jmeter-${version}`;
+            installPlugins(jmeterDir, plugins);
         }
 
-        let pm = `${jmeterDir}/lib/ext/jmeter-plugins-manager-1.3.jar`;
-        try {
-            await tools.downloadTool(pluginmgrUrl, pm);
-        } catch (exception) {
-            throw new Error(tasks.loc("JMeterUtilityDownloadFailed", cmdrunnerUrl, exception));
-        }
-
-        let jmeterTool: ToolRunner = tasks.tool("java");
-        jmeterTool.arg(["-cp", pm, "org.jmeterplugins.repository.PluginManagerCMDInstaller"]);
-        let res = await jmeterTool.exec();
-        if (res != 0) {
-            throw new Error(tasks.loc("JMeterPluginManagerInstallFailed", cmdrunnerUrl));
-        }
-
-        let pmCmd: ToolRunner = tasks.tool(`${jmeterDir}/bin/PluginsManagerCMD.sh`);
-        pmCmd.arg(["install", "jpgc-fifo,jpgc-json=2.2"]);
-        let pmCmdRes = await pmCmd.exec();
-        if (pmCmdRes != 0) {
-            throw new Error(tasks.loc("JMeterPluginInstallFailed", cmdrunnerUrl));
-        }
-
-        cachedToolPath = await tools.cacheDir(jmeterUnzippedPath, jmeterToolName, version);
+        cachedToolPath = await tools.cacheDir(jmeterUnzippedPath, fullToolName, version);
     }
 
     let jmeterPath = findJMeterExecutable(cachedToolPath);
@@ -85,10 +64,46 @@ function findJMeterExecutable(rootFolder: string): string {
     return matchingResultFiles[0];
 }
 
+async function installPlugins(jmeterDir: string, plugins: string) {
+
+    try {
+        await tools.downloadTool(cmdrunnerUrl, `${jmeterDir}/lib/cmdrunner-2.2.jar`);
+    } catch (exception) {
+        throw new Error(tasks.loc("JMeterDownloadFailed", cmdrunnerUrl, exception));
+    }
+
+    let pm = `${jmeterDir}/lib/ext/jmeter-plugins-manager-1.3.jar`;
+    try {
+        await tools.downloadTool(pluginmgrUrl, pm);
+    } catch (exception) {
+        throw new Error(tasks.loc("JMeterUtilityDownloadFailed", cmdrunnerUrl, exception));
+    }
+
+    let jmeterTool: ToolRunner = tasks.tool("java");
+    jmeterTool.arg(["-cp", pm, "org.jmeterplugins.repository.PluginManagerCMDInstaller"]);
+    let res = await jmeterTool.exec();
+    if (res != 0) {
+        throw new Error(tasks.loc("JMeterPluginManagerInstallFailed", cmdrunnerUrl));
+    }
+
+    let pmCmd: ToolRunner = tasks.tool(`${jmeterDir}/bin/PluginsManagerCMD${getScriptExtension()}`);
+    pmCmd.arg(["install", plugins]);
+    let pmCmdRes = await pmCmd.exec();
+    if (pmCmdRes != 0) {
+        throw new Error(tasks.loc("JMeterPluginInstallFailed", cmdrunnerUrl));
+    }
+}
+
 function getBatchfileExtension(): string {
     if (isWindows) {
         return ".bat";
     }
-
     return "";
+}
+
+function getScriptExtension(): string {
+    if (isWindows) {
+        return ".bat";
+    }
+    return ".sh";
 }

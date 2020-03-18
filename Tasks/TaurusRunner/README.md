@@ -40,15 +40,15 @@ execution:
 - scenario:
     script: my-file.jmx
 ```
-  * A URL to test.
+  * A URL to test, for quick load testing.
   * Extra options and arguments to the `bzt` command line.
 
-* **JMeter Home\*:** XXXX
+* **JMeter Home\*:** The directory in which JMeter is installed. Use `$(JMeterInstaller.JMeterHome)` to reference the output of the JMeter tool installer task.
 
-* **JMeter Path\*:** XXXX
+* **JMeter Path\*:** The location in which the JMeter executable is installed. Use `$(JMeterInstaller.JMeterPath)` to reference the output of the JMeter tool installer task.
 
-* **JMeter Version\*:** XXXX
+* **JMeter Version\*:** The installed JMeter version. Use `$(JMeterInstaller.JMeterVersion)` to reference the output of the JMeter tool installer task.
 
-* **Artifacts output directory\*:** XXXX
+* **Artifacts output directory\*:** The Taurus and JMeter output directory. Will contain a `report` directory with an HTML report, and a `TEST-Taurus.xml` file with a test report in JUnit format.
 
-* **Upload report\*:** XXXX
+* **Upload report\*:** XXXX Whether to upload JMeter report to the build logs.

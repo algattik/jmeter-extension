@@ -6,7 +6,8 @@ import * as installer from './jmeter-installer';
 
 async function configureJMeter() {
     let inputVersion = tasks.getInput("jmeterVersion", true) ?? '';
-    let jmeterPath = await installer.downloadJMeter(inputVersion);
+    let plugins = tasks.getInput("plugins");
+    let jmeterPath = await installer.downloadJMeter(inputVersion, plugins?.trim());
     let envPath = process.env['PATH'];
 
     // Prepend the tools path. Instructs the agent to prepend for future tasks

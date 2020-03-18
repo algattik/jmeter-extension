@@ -15,7 +15,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 1584540198
+    "Patch": 1584546141
   },
   "instanceNameFormat": "Run Taurus",
   "inputs": [
@@ -33,7 +33,7 @@
       "label": "JMeter Home",
       "defaultValue": "$(JMeterInstaller.JMeterHome)",
       "required": true,
-      "helpMarkDown": "The directory in which JMeter is installed. Use \"$(JMeterInstaller.JMeterHome)\" to reference the output of the JMeter tool installer task."
+      "helpMarkDown": "The directory in which JMeter is installed. Use `$(JMeterInstaller.JMeterHome)` to reference the output of the JMeter tool installer task."
     },
     {
       "name": "jmeterPath",
@@ -41,7 +41,7 @@
       "label": "JMeter Path",
       "defaultValue": "$(JMeterInstaller.JMeterPath)",
       "required": true,
-      "helpMarkDown": "The location in which the JMeter executable is installed. Use \"$(JMeterInstaller.JMeterPath)\" to reference the output of the JMeter tool installer task."
+      "helpMarkDown": "The location in which the JMeter executable is installed. Use `$(JMeterInstaller.JMeterPath)` to reference the output of the JMeter tool installer task."
     },
     {
       "name": "jmeterVersion",
@@ -49,7 +49,7 @@
       "label": "JMeter Version",
       "defaultValue": "$(JMeterInstaller.JMeterVersion)",
       "required": true,
-      "helpMarkDown": "The installed JMeter version. Use \"$(JMeterInstaller.JMeterVersion)\" to reference the output of the JMeter tool installer task."
+      "helpMarkDown": "The installed JMeter version. Use `$(JMeterInstaller.JMeterVersion)` to reference the output of the JMeter tool installer task."
     },
     {
       "name": "outputDir",
@@ -57,7 +57,7 @@
       "label": "Artifacts output directory",
       "defaultValue": "$(Build.StagingDirectory)/taurus",
       "required": true,
-      "helpMarkDown": "The Taurus and JMeter output directory. Will contain a \"report\" directory with an HTML report, and a \"TEST-Taurus.xml\" file with a report in JUnit format."
+      "helpMarkDown": "The Taurus and JMeter output directory. Will contain a `report` directory with an HTML report, and a `TEST-Taurus.xml` file with a report in JUnit format."
     },
     {
       "name": "uploadReport",
@@ -72,5 +72,9 @@
     "Node10": {
       "target": "src/index.js"
     }
+  },
+  "messages": {
+    "TaurusRunFailed": "ms-resource:loc.messages.TaurusRunFailed",
+    "JMeterRunFailed": "ms-resource:loc.messages.JMeterRunFailed"
   }
 }
