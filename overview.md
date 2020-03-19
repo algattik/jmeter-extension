@@ -230,3 +230,5 @@ scenarios:
    requests:
    - https://www.bing.com
 ```
+
+For a more complete solution template, see the [JMeter and Terraform Azure sample](https://github.com/Azure-Samples/jmeter-aci-terraform) on GitHub.
