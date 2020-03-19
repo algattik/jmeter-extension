@@ -7,6 +7,6 @@ This extension provides the following components:
 
 See [overview.md](overview.md) for a usage guide.
 
-https://github.com/algattik/jmeter-extension/blob/master/images/pipeline.png
+![JMeter Azure DevOps pipeline](images/pipeline.png)
 
-https://github.com/algattik/jmeter-extension/blob/master/images/azure-application-insights-live-metrics.png
+![JMeter live metrics](images/azure-application-insights-live-metrics.png)
