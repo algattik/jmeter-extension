@@ -23,7 +23,9 @@ Example:
     To install Taurus version 1.14.0, use 1.14.0
 For getting more details about exact version, refer to [this link](https://pypi.org/project/bzt/#history)
 
-* **Taurus Arguments\*:** Arguments passed to the `bzt` Taurus script. This should be a space-separated list of files or websites to test. Files can be one or more Taurus YAML definition files, JMeter files or website URLs. Can also contain
+* **Taurus Configuration\*:** Optional [Taurus YAML](https://gettaurus.org/docs/YAMLTutorial/) configuration file. You can also provide a path to a file in the *Taurus Arguments* field."
+
+* **Taurus Arguments\*:** Optional arguments passed to the `bzt` Taurus script. This should be a space-separated list of files or websites to test. Files can be one or more Taurus YAML definition files, JMeter files or website URLs. Can also contain
   * Taurus YAML definition file (recommended), which can reference a JMeter JMX file. Example:
 ```
 execution:

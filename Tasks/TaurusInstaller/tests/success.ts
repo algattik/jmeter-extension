@@ -8,6 +8,7 @@ let taskPath = path.join(__dirname, '..', 'src', 'index.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 
 tmr.setInput('taurusVersion', userRequestedVersion);
+tmr.setInput('pythonCommand', '/fake/bin/python3');
 
 // Provide answers for task mock.
 const mockAnswers: ma.TaskLibAnswers = {
@@ -18,7 +19,10 @@ const mockAnswers: ma.TaskLibAnswers = {
         "/fake/bin/bzt": true,
     },
     exec: {
-        'pip3 install bzt==1.14.0': {
+        '/fake/bin/python3 -V': {
+            code: 0
+        },
+        '/fake/bin/python3 -mpip install bzt==1.14.0': {
             code: 0
         },
         '/fake/bin/bzt --help': {

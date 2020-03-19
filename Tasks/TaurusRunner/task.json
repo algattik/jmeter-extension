@@ -15,17 +15,24 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 1584548038
+    "Patch": 1584624018
   },
   "instanceNameFormat": "Run Taurus",
   "inputs": [
     {
+      "name": "taurusConfig",
+      "type": "multiLine",
+      "label": "Taurus Configuration YAML",
+      "defaultValue": "execution:\n- scenario:\n    requests:\n    - https://www.bing.com\n    # You can also reference a JMeter test plan (recommended)\n    # script: website-test.jmx\n  concurrency: 5\n  iterations: 10\n  ramp-up: 2s\n\nreporting:\n- module: junit-xml\n  filename: taurus-output/TEST-Taurus.xml",
+      "required": false,
+      "helpMarkDown": "Optional [Taurus YAML](https://gettaurus.org/docs/YAMLTutorial/) configuration file. You can also provide a path to a file in the *Taurus Arguments* field."
+    },
+    {
       "name": "taurusArguments",
       "type": "string",
       "label": "Taurus Arguments",
-      "defaultValue": "taurus_file.yml jmeter_file.jmx http://website ...",
-      "required": true,
-      "helpMarkDown": "Files or websites to test. Can be one or more Taurus YAML definition files, JMeter files or website URLs."
+      "required": false,
+      "helpMarkDown": "[Taurus command-line arguments](https://gettaurus.org/docs/CommandLine/): files or websites to test, can be the paths to one or more Taurus YAML definition files, JMeter files or website URLs. You can also provide configuration settings."
     },
     {
       "name": "jmeterHome",
@@ -55,7 +62,7 @@
       "name": "outputDir",
       "type": "string",
       "label": "Artifacts output directory",
-      "defaultValue": "$(Build.StagingDirectory)/taurus",
+      "defaultValue": "taurus-output",
       "required": true,
       "helpMarkDown": "The Taurus and JMeter output directory. Will contain a `report` directory with an HTML report, and a `TEST-Taurus.xml` file with a report in JUnit format."
     },
@@ -74,7 +81,8 @@
     }
   },
   "messages": {
-    "TaurusRunFailed": "ms-resource:loc.messages.TaurusRunFailed",
-    "JMeterRunFailed": "ms-resource:loc.messages.JMeterRunFailed"
+    "MustProvideConfigOrArgs": "You must provide either a Taurus configuration YAML, or a path to a Taurus YAML / JMeter JMX file.",
+    "TaurusRunFailed": "Taurus run failed.",
+    "JMeterReportGenerationRunFailed": "JMeter report generation failed."
   }
 }

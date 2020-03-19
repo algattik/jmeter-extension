@@ -15,10 +15,12 @@ let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 tmr.setInput('jmeterVersion', userRequestedVersion);
 tmr.setInput('plugins', 'jpgc-fifo,jpgc-json=2.2');
 
+const pluginsSHA1 = '534e2b3f096b473cba25f587a84e6449e5bfb86f';
+
 
 tmr.registerMock("azure-pipelines-tool-lib/tool", {
     findLocalTool: (toolName: string, versionSpec: string, arch?: string) => {
-        if (toolName !== "jmeter+jpgc-fifo,jpgc-json=2.2") {
+        if (toolName !== `jmeter-${pluginsSHA1}`) {
             throw new Error(`Unexpected toolName ${toolName}.`);
         }
         if (versionSpec !== userRequestedVersion) {
@@ -52,7 +54,7 @@ tmr.registerMock("azure-pipelines-tool-lib/tool", {
         if (sourceDir !== "/fake/path/to/extracted/contents") {
             throw new Error(`Unexpected sourceDir ${sourceDir}.`);
         }
-        if (tool !== "jmeter+jpgc-fifo,jpgc-json=2.2") {
+        if (tool !== `jmeter-${pluginsSHA1}`) {
             throw new Error(`Unexpected tool ${tool}.`);
         }
         if (version !== userRequestedVersion) {

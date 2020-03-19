@@ -3,14 +3,16 @@ import path = require('path');
 import * as runner from './taurus-runner';
 
 async function runTaurus() {
-    let taurusArguments = tasks.getInput("taurusArguments", true) ?? '';
+    let taurusConfig = tasks.getInput("taurusConfig", false) ?? '';
+    let taurusArguments = tasks.getInput("taurusArguments", false) ?? '';
     let jmeterHome = tasks.getInput("jmeterHome", true) ?? '';
     let jmeterPath = tasks.getInput("jmeterPath", true) ?? '';
     let jmeterVersion = tasks.getInput("jmeterVersion", true) ?? '';
     let outputDir = tasks.getInput("outputDir", true) ?? '';
     let uploadReport = tasks.getBoolInput("uploadReport", true) ?? '';
 
-    let junitReport = await runner.runTaurusTool(taurusArguments, jmeterHome, jmeterVersion, outputDir);
+    let taurusArgs = await runner.buildTaurusArgs(taurusConfig, taurusArguments);
+    await runner.runTaurusTool( taurusArgs, jmeterHome, jmeterVersion, outputDir);
     let reportDir = await runner.generateJMeterReport(jmeterPath, outputDir);
     if (uploadReport) {
         await runner.uploadJMeterReport(reportDir);

@@ -6,5 +6,6 @@ let taskPath = path.join(__dirname, '..', 'src', 'index.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 
 tmr.setInput('taurusVersion', 'bad');
+tmr.setInput('pythonCommand', '/fake/bin/python3');
 
 tmr.run();

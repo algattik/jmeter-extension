@@ -4,8 +4,9 @@ import path = require('path');
 import * as installer from './taurus-installer';
 
 async function configureTaurus() {
+    let pythonCommand = tasks.getInput("pythonCommand", true) ?? '';
     let inputVersion = tasks.getInput("taurusVersion", true) ?? '';
-    await installer.installTaurus(inputVersion);
+    await installer.installTaurus(pythonCommand, inputVersion);
 }
 
 async function verifyTaurus() {

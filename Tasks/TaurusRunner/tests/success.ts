@@ -27,7 +27,7 @@ const mockAnswers: ma.TaskLibAnswers = {
         "/fake/bin/bzt": true,
     },
     exec: {
-        'bzt -o settings.artifacts-dir=/fake/output/dir -o modules.jmeter.path=/fake/jmeter/home -o modules.jmeter.version=5.1 -o reporting.-1={"module":"junit-xml","filename":"/fake/output/dir/TEST-Taurus.xml"} arg1 arg2': {
+        'bzt -o settings.artifacts-dir=/fake/output/dir -o modules.jmeter.path=/fake/jmeter/home -o modules.jmeter.version=5.1 arg1 arg2': {
             code: 0
         },
         '/fake/jmeter/path -Jjmeter.save.saveservice.assertion_results_failure_message=false -g /fake/output/dir/kpi.jtl -o /fake/output/dir/report -q /fake/output/dir/jmeter-bzt.properties': {

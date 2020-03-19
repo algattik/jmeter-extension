@@ -1,8 +1,10 @@
 import tasks = require('azure-pipelines-task-lib/task');
+import tr = require('azure-pipelines-task-lib/toolrunner');
 import tools = require('azure-pipelines-tool-lib/tool');
-import { ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 import path = require('path');
 import os = require('os');
+import crypto = require('crypto');
+
 
 const jmeterToolName = "jmeter";
 const isWindows = os.type().match(/^Win/);
@@ -16,7 +18,7 @@ export async function downloadJMeter(version: string, plugins?: string): Promise
     }
 
     let hasPlugins = plugins ? plugins.length : false;
-    let fullToolName = hasPlugins ? `${jmeterToolName}+${plugins?.trim()}` : jmeterToolName;
+    let fullToolName = hasPlugins && plugins ? `${jmeterToolName}-${sha1(plugins?.trim())}` : jmeterToolName;
 
     let cachedToolPath = tools.findLocalTool(fullToolName, version);
     if (!cachedToolPath) {
@@ -34,10 +36,10 @@ export async function downloadJMeter(version: string, plugins?: string): Promise
 
         // Plugins manager should be installed even when no plugins are installed, as
         // Taurus detects and automatically installs missing plugins from JMX files.
-        installPluginsManager(jmeterDir);
+        await installPluginsManager(jmeterDir);
 
         if (hasPlugins && plugins) {
-            installPlugins(jmeterDir, plugins);
+            await installPlugins(jmeterDir, plugins);
         }
 
         cachedToolPath = await tools.cacheDir(jmeterUnzippedPath, fullToolName, version);
@@ -62,7 +64,7 @@ function getJMeterDownloadUrl(version: string): string {
 }
 
 function findJMeterExecutable(rootFolder: string): string {
-    let jmeterPath = path.join(rootFolder, "*/bin/" + jmeterToolName + getBatchfileExtension());
+    let jmeterPath = path.join(rootFolder, `*/bin/${jmeterToolName}${getBatchfileExtension()}`);
     var allPaths = tasks.find(rootFolder);
     var matchingResultFiles = tasks.match(allPaths, jmeterPath, rootFolder);
     return matchingResultFiles[0];
@@ -83,9 +85,9 @@ async function installPluginsManager(jmeterDir: string) {
         throw new Error(tasks.loc("JMeterUtilityDownloadFailed", cmdrunnerUrl, exception));
     }
 
-    let jmeterTool: ToolRunner = tasks.tool("java");
+    let jmeterTool: tr.ToolRunner = tasks.tool("java");
     jmeterTool.arg(["-cp", pm, "org.jmeterplugins.repository.PluginManagerCMDInstaller"]);
-    let res = await jmeterTool.exec();
+    let res = await jmeterTool.exec({ ignoreReturnCode: true } as tr.IExecOptions);
     if (res != 0) {
         throw new Error(tasks.loc("JMeterPluginManagerInstallFailed", cmdrunnerUrl));
     }
@@ -93,9 +95,9 @@ async function installPluginsManager(jmeterDir: string) {
 
 async function installPlugins(jmeterDir: string, plugins: string) {
 
-    let pmCmd: ToolRunner = tasks.tool(`${jmeterDir}/bin/PluginsManagerCMD${getScriptExtension()}`);
+    let pmCmd: tr.ToolRunner = tasks.tool(`${jmeterDir}/bin/PluginsManagerCMD${getScriptExtension()}`);
     pmCmd.arg(["install", plugins]);
-    let pmCmdRes = await pmCmd.exec();
+    let pmCmdRes = await pmCmd.exec({ ignoreReturnCode: true } as tr.IExecOptions);
     if (pmCmdRes != 0) {
         throw new Error(tasks.loc("JMeterPluginInstallFailed", cmdrunnerUrl));
     }
@@ -113,4 +115,9 @@ function getScriptExtension(): string {
         return ".bat";
     }
     return ".sh";
+}
+
+
+function sha1(s: string): string {
+    return crypto.createHash('sha1').update(s).digest('hex');
 }

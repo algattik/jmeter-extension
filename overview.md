@@ -55,33 +55,43 @@ This extension is intended to run on **Windows**, **Linux** and **MacOS** agents
 
 * In the **Taurus Arguments** enter a space-separated list of files or websites to test. The following arguments can be passed:
   * Taurus YAML definition file (recommended), which can reference a JMeter JMX file. Example:
-```
-execution:
-- scenario:
-    script: website-test.jmx
-  concurrency: 5
-  iterations: 10
-  hold-for: 10s
-  ramp-up: 2s
-```
+
+        execution:
+        - scenario:
+            script: website-test.jmx
+          concurrency: 5
+          hold-for: 10s
+          ramp-up: 2s
+        reporting:
+        - module: junit-xml
+          filename: TEST-Taurus.xml
+
   * A JMeter JMX file. This is equivalent to the following YAML file:
-```
-execution:
-- scenario:
-    script: my-file.jmx
-```
+
+        execution:
+        - scenario:
+            script: my-file.jmx
+
   * A URL to test, for quick load testing.
-  * Extra options and arguments to the `bzt` command line.
+  * Extra options and arguments to the `bzt` command line. For example, you can pass `-o modules.jmeter.properties.KEY=VALUE` to inject a property via a placeholder `${__P(KEY)}` in a JMeter plan.
 
 * Leave the **JMeter Home**,  **JMeter Path** and **JMeter Version** fields to their default value, to use the version of JMeter installed by the JMeter Installer task.
 
-* The **Artifacts output directory** will contain a `report` directory with an HTML report, and a `TEST-Taurus.xml` file with a test report in JUnit format.
+* The **Artifacts output directory** will contain a `report` directory with an HTML report.
 
 * Check the **Upload report** checkbox so that the JMeter report is automatically archived within the build logs.
 
 ![Using Taurus tool runner task](images/Taurus_tool_runner_inputs.png)
 
 ## Advanced usage
+
+### Setting JMeter properties
+
+Check the [Taurus JMeter documentation](https://gettaurus.org/docs/JMeter/) for how to control the JMeter execution in detail.
+
+JMeter properties can be set in the YAML file, or as arguments as a JSON structure. For example, to change the granularity of report time graphs from the default of 60000 ms, use the following argument to the Taurus tool runner task:
+
+    -o modules.jmeter.properties="{'jmeter.reportgenerator.overall_granularity':1000}"
 
 ### Real-time test monitoring with Azure Application Insights
 
@@ -94,7 +104,7 @@ placeholder `${__P(INSTRUMENTATION_KEY)}`.
 
 ![JMeter Azure backend listener](images/jmeter-backend-listener.png)
 
-* In your pipeline, the **JUnit tool installer** task, under **plugins**, enter `jmeter.backendlistener.azure` in order to
+* In your pipeline, in the **JMeter tool installer** task, under **plugins**, enter `jmeter.backendlistener.azure` in order to
 install the plugin on the build agent as well.
 
 * [Create an Azure Application Insights resource](https://docs.microsoft.com/en-us/azure/azure-monitor/app/create-new-resource) and copy the Instrumentation Key.
@@ -190,3 +200,33 @@ Ensure that the `user.classpath` points to the location where the Maven task bui
 
 * In your pipeline, configure the JMeter Installer task, the Taurus Installer task, and the Taurus Runner task. As argument to 
 the Taurus Runner task, enter the location of your `kafka-test.yml` file.
+
+### Distributed testing
+
+Running JMeter in distributed mode ([Remote Testing](https://jmeter.apache.org/usermanual/remote-test.html)) requires bidirectional communication between server and client instances. Therefore, it can only be used with [self-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser#install). You could run JMeter servers on Virtual Machines or Azure Container Instances on the same virtual network as the hosted agent.
+
+For instance, [deploy an Azure Container Instance](https://portal.azure.com/#create/Microsoft.ContainerInstances) in the Azure portal.  Use the `justb4/jmeter:5.1.1` Docker image for JMeter from Docker Hub. Under Networking, place your instance in a new subnet in your VNET. In Advanced settings, use command override and enter command `["/entrypoint.sh", "-s", "-Jserver.rmi.ssl.disable=true" ]`.
+
+Run JMeter from the command line with the [`-R` flag](https://jmeter.apache.org/usermanual/remote-test.html):
+
+```
+jmeter -n -Jserver.rmi.ssl.disable=true -t website-test.jmx -R CONTAINER_INSTANCE_IP_ADDRESS
+```
+
+or use the Taurus runner to run [JMeter in distributed mode](https://gettaurus.org/docs/JMeter/#Run-JMeter-in-Distributed-Mode):
+
+```
+execution:
+- distributed:
+  - <CONTAINER_INSTANCE_IP_ADDRESS>
+  scenario: test_website
+scenarios:
+ test_website:
+   properties:
+     loops: 10
+     threads: 2
+     rampup: 10
+     server.rmi.ssl.disable: true
+   requests:
+   - https://www.bing.com
+```

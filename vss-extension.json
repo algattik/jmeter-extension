@@ -1,82 +1,103 @@
 {
-    "manifestVersion": 1,
-    "id": "custom-jmeter-tasks3",
-    "name": "JMeter",
-    "version": "0.0.50",
-    "publisher": "AlexandreGattiker",
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],
-    "description": "[EXPERIMENTAL] Install JMeter testing tool.",
-    "categories": [
-        "Azure Pipelines"
-    ],
-    "Tags": [
-        "JMeter",
-        "Azure",
-        "Performance",
-        "Load",
-        "Integration",
-        "Test",
-        "Testing",
-        "Release",
-        "DevOps"
-    ],
-    "branding": {
-        "color": "#FFFFFF",
-        "theme": "light"
+  "manifestVersion": 1,
+  "id": "custom-jmeter-tasks3",
+  "name": "JMeter",
+  "version": "0.0.73",
+  "publisher": "AlexandreGattiker",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "[EXPERIMENTAL] Install JMeter testing tool.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "Tags": [
+    "JMeter",
+    "Azure",
+    "Performance",
+    "Load",
+    "Integration",
+    "Test",
+    "Testing",
+    "Release",
+    "DevOps"
+  ],
+  "branding": {
+    "color": "#FFFFFF",
+    "theme": "light"
+  },
+  "icons": {
+    "default": "images/icon.png"
+  },
+  "screenshots": [
+    {
+      "path": "images/screenshot-jmeter.png"
     },
-    "icons": {
-        "default": "images/icon.png"
+    {
+      "path": "images/screenshot-pipeline.png"
     },
-    "content": {
-        "details": {
-            "path": "overview.md"
-        }
+    {
+      "path": "images/screenshot-runner.png"
     },
-    "files": [
-        {
-            "path": "Tasks/JMeterInstaller"
-        },
-        {
-            "path": "Tasks/TaurusInstaller"
-        },
-        {
-            "path": "Tasks/TaurusRunner"
-        }
-    ],
-    "contributions": [
-        {
-            "id": "custom-jmeter-installer-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "Tasks/JMeterInstaller"
-            }
-        },
-        {
-            "id": "custom-taurus-installer-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "Tasks/TaurusInstaller"
-            }
-        },
-        {
-            "id": "custom-taurus-runner-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "Tasks/TaurusRunner"
-            }
-        }
-    ]
+    {
+      "path": "images/screenshot-taurus-console.png"
+    },
+    {
+      "path": "images/screenshot-tests.png"
+    }
+  ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "files": [
+    {
+      "path": "Tasks/JMeterInstaller"
+    },
+    {
+      "path": "Tasks/TaurusInstaller"
+    },
+    {
+      "path": "Tasks/TaurusRunner"
+    },
+    {
+      "path": "images",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "custom-jmeter-installer-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Tasks/JMeterInstaller"
+      }
+    },
+    {
+      "id": "custom-taurus-installer-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Tasks/TaurusInstaller"
+      }
+    },
+    {
+      "id": "custom-taurus-runner-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Tasks/TaurusRunner"
+      }
+    }
+  ]
 }

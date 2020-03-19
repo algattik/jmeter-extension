@@ -15,7 +15,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 1584548038
+    "Patch": 1584624018
   },
   "instanceNameFormat": "Install JMeter $(jmeterVersion)",
   "inputs": [
@@ -31,7 +31,7 @@
       "name": "plugins",
       "type": "string",
       "label": "Plugins",
-      "defaultValue": "jpcg-standard",
+      "defaultValue": "jpgc-casutg,jpgc-dummy,jpgc-ffw,jpgc-fifo,jpgc-functions,jpgc-json,jpgc-perfmon,jpgc-prmctl,jpgc-tst",
       "required": false,
       "helpMarkDown": "Optional list of JMeter plugins to install, e.g. `jpgc-fifo,jpgc-json=2.2`"
     }
@@ -42,13 +42,13 @@
     }
   },
   "messages": {
-    "VerifyJMeterInstallation": "ms-resource:loc.messages.VerifyJMeterInstallation",
-    "InputVersionNotValidVersion": "ms-resource:loc.messages.InputVersionNotValidVersion",
-    "JMeterNotFoundInFolder": "ms-resource:loc.messages.JMeterNotFoundInFolder",
-    "JMeterDownloadFailed": "ms-resource:loc.messages.JMeterDownloadFailed",
-    "JMeterUtilityDownloadFailed": "ms-resource:loc.messages.JMeterUtilityDownloadFailed",
-    "JMeterPluginManagerInstallFailed": "ms-resource:loc.messages.JMeterPluginManagerInstallFailed",
-    "JMeterPluginInstallFailed": "ms-resource:loc.messages.JMeterPluginInstallFailed"
+    "VerifyJMeterInstallation": "Verifying JMeter installation...",
+    "InputVersionNotValidVersion": "Input version %s is not a valid version",
+    "JMeterNotFoundInFolder": "JMeter executable not found in path %s",
+    "JMeterDownloadFailed": "Failed to download JMeter from url %s. Error %s",
+    "JMeterUtilityDownloadFailed": "Failed to download JMeter utility from url %s. Error %s",
+    "JMeterPluginManagerInstallFailed": "Failed to install JMeter plugin manager. Error %s",
+    "JMeterPluginInstallFailed": "Failed to install JMeter plugins. Error %s"
   },
   "OutputVariables": [
     {
